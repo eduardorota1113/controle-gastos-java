@@ -1,0 +1,22 @@
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  port: ${PORT:8080}
+  error:
+    include-message: never
+    include-stacktrace: never
+spring:
+  application:
+    name: controle-gastos
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/controle_gastos?connectionTimeZone=America/Sao_Paulo&characterEncoding=UTF-8}
+    username: ${DB_USERNAME:controle_app}
+    password: ${DB_PASSWORD:}
+    hikari:
+      maximum-pool-size: 5
+  flyway:
+    enabled: true
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+app:
+  demo: false

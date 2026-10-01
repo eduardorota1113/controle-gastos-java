@@ -1,0 +1,12 @@
+/target/
+/app/*.jar
+.env
+.env.*
+!.env.example
+*.log
+/data/
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db

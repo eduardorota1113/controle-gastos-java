@@ -1,0 +1,7 @@
+target
+.git
+.env
+app/*.jar
+data
+*.log
+.idea

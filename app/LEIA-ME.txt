@@ -1,0 +1,3 @@
+O pacote ZIP entregue inclui aqui o JAR executável.
+Ele não faz parte do histórico Git: o código-fonte gera esse arquivo com mvnw package.
+Execute iniciar-demo.cmd para experimentar no Windows.
