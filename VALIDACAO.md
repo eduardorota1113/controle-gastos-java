@@ -1,4 +1,19 @@
-# Verificações da versão 1.0.0
+# Verificações
+
+## Interface da versão 1.1.0
+
+Revisada em Chrome, em 1º de outubro de 2026, usando o backend de demonstração existente. Os registros anteriores foram preservados; os testes criaram e removeram apenas seus próprios dados temporários.
+
+- Layout sem transbordamento horizontal da página em 1440, 1024, 768, 390 e 320 pixels. A tabela tem sua própria rolagem quando necessário.
+- Capturas de desktop e celular inspecionadas visualmente: `docs/editorial-desktop.png` e `docs/editorial-mobile.png`.
+- Navegação, cadastro de categoria com cor personalizada, cadastro e edição de gasto, busca, download CSV, cancelamento e confirmação de exclusão verificados.
+- Texto contendo marcação HTML exibido como texto, sem criar elementos na página.
+- Abertura e cancelamento dos formulários de orçamento e gastos, incluindo o formulário de gastos em 320 pixels.
+- Transição com curva de mola confirmada; movimento reduzido respeitado por `prefers-reduced-motion`.
+- Nenhum erro de JavaScript ou erro no console durante os fluxos.
+- Compilação da versão 1.1.0 e geração do executável concluídas com `mvn verify`: 15 testes de integração em H2, zero falhas e zero erros.
+
+## Base da versão 1.0.0
 
 Executadas em 1º de outubro de 2026, no Windows 11 com Java 21.0.12 e Maven 3.9.11.
 

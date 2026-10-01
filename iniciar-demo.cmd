@@ -1,9 +1,9 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-set "APP_JAR=app\controle-gastos-1.0.0.jar"
+set "APP_JAR=app\controle-gastos-1.1.0.jar"
 if exist "%APP_JAR%" goto run
-set "APP_JAR=target\controle-gastos-1.0.0.jar"
+set "APP_JAR=target\controle-gastos-1.1.0.jar"
 if exist "%APP_JAR%" goto run
 echo Compilando o projeto. A primeira execucao precisa de internet e JDK 21.
 call mvnw.cmd -B -ntp -DskipTests package

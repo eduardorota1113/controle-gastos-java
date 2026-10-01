@@ -8,7 +8,7 @@ RUN mvn -B -ntp -DskipTests package
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 RUN useradd --system --uid 10001 app
-COPY --from=build /build/target/controle-gastos-1.0.0.jar app.jar
+COPY --from=build /build/target/controle-gastos-1.1.0.jar app.jar
 USER 10001
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

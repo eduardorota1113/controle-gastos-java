@@ -3,71 +3,240 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#123d32">
-  <title>Controle de Gastos</title>
+  <meta name="theme-color" content="#f7f3ea">
+  <title>Controle — seu caderno de gastos</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/styles.css">
   <script src="/app.js" defer></script>
 </head>
-<body>
-<svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M20 8V5a2 2 0 0 0-2-2H6a3 3 0 0 0 0 6h14v11H6a3 3 0 0 1-3-3V6m17 6h-5v5h5m-3-2.5h.01"/></symbol>
-  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
-  <symbol id="i-list" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></symbol>
-  <symbol id="i-tag" viewBox="0 0 24 24"><path d="m3 3 9 0 9 9-9 9-9-9V3Z"/><circle cx="8" cy="8" r="1.5"/></symbol>
-  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
-  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
-  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 11h18"/></symbol>
-  <symbol id="i-edit" viewBox="0 0 24 24"><path d="m16 3 5 5-12 12H4v-5L16 3Z"/><path d="m13 6 5 5"/></symbol>
-  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></symbol>
-  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></symbol>
-  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
-  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
-  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
-  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
-</svg>
-<aside class="sidebar">
-  <a class="brand" href="#overview"><span class="brand-icon"><svg class="icon"><use href="#i-wallet"/></svg></span><span>controle<span class="brand-dot">.</span><small>SEU DINHEIRO, MAIS CLARO</small></span></a>
-  <span class="nav-caption">PRINCIPAL</span>
-  <nav aria-label="Navegação principal">
-    <button class="nav-item active" data-view="overview" aria-current="page"><svg class="icon"><use href="#i-grid"/></svg>Visão geral</button>
-    <button class="nav-item" data-view="expenses"><svg class="icon"><use href="#i-list"/></svg>Gastos</button>
-    <button class="nav-item" data-view="categories"><svg class="icon"><use href="#i-tag"/></svg>Categorias</button>
-  </nav>
-  <div class="sidebar-tip"><span class="tip-icon"><svg class="icon"><use href="#i-target"/></svg></span><strong>Um passo de cada vez.</strong><p>Registrar seus gastos é o começo de escolhas mais conscientes.</p></div>
-  <div class="sidebar-footer"><span class="avatar">EU</span><span>Meu controle pessoal<small>Valores em reais · BRL</small></span></div>
-</aside>
-<main>
-  <div class="topbar"><span class="breadcrumb">Meu espaço <span>/</span> <strong id="breadcrumb">Visão geral</strong></span><span class="local-badge"><span></span>Controle pessoal</span></div>
-  <div id="demo-banner" class="demo-banner" hidden>Você está no modo demonstração. Os dados são fictícios e serão apagados ao reiniciar.</div>
-  <header class="page-header"><div><p class="eyebrow">CADA GASTO CONTA</p><h1 id="page-title">Visão geral</h1><p id="page-subtitle">Entenda para onde seu dinheiro está indo.</p></div><button class="button primary" id="main-add"><svg class="icon"><use href="#i-plus"/></svg><span>Novo gasto</span></button></header>
-  <div id="global-error" class="error global-error" role="alert" hidden><span></span><button class="button small" id="retry">Tentar novamente</button></div>
-  <div id="month-toolbar" class="month-toolbar"><div class="month-picker"><button class="icon-button" id="previous-month" aria-label="Mês anterior"><svg class="icon flip"><use href="#i-chevron"/></svg></button><label class="month-label"><svg class="icon"><use href="#i-calendar"/></svg><span id="month-label">Carregando…</span><input type="month" id="selected-month" min="1900-01" max="9998-12" aria-label="Selecionar mês"></label><button class="icon-button" id="next-month" aria-label="Próximo mês"><svg class="icon"><use href="#i-chevron"/></svg></button></div><span class="period-note">Um olhar sobre o seu mês</span></div>
-  <section id="overview-view" aria-label="Resumo mensal">
-    <div class="stats-grid">
-      <article class="stat-card total-card"><div class="stat-heading">Total de gastos<span class="stat-icon"><svg class="icon"><use href="#i-wallet"/></svg></span></div><strong id="stat-total">—</strong><span id="stat-comparison" class="stat-caption">Carregando o resumo</span></article>
-      <article class="stat-card"><div class="stat-heading">Saldo do orçamento<button class="text-button" id="open-budget">Definir</button></div><strong id="stat-remaining">—</strong><div class="budget-track"><span id="budget-progress"></span></div><span id="stat-budget-caption" class="stat-caption">Defina quanto quer gastar neste mês</span></article>
-      <article class="stat-card"><div class="stat-heading">Gastos registrados<span class="stat-icon neutral"><svg class="icon"><use href="#i-list"/></svg></span></div><strong id="stat-count">—</strong><span id="stat-average" class="stat-caption">Todos os gastos do mês selecionado</span></article>
+<body data-view="overview">
+  <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+  <!-- Os ícones ficam numa folha só. Sem pedir nada a um CDN. -->
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M20 8V5a2 2 0 0 0-2-2H6a3 3 0 0 0 0 6h14v11H6a3 3 0 0 1-3-3V6m17 6h-5v5h5m-3-2.5h.01"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="m3 3 9 0 9 9-9 9-9-9V3Z"/><circle cx="8" cy="8" r="1.5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 11h18"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="m16 3 5 5-12 12H4v-5L16 3Z"/><path d="m13 6 5 5"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  </svg>
+
+  <aside class="sidebar">
+    <a class="brand" href="#overview" aria-label="Controle — início">
+      <span class="brand-word">controle<span class="brand-dot">.</span></span>
+      <small>UM CADERNO PARA AS CONTAS</small>
+    </a>
+
+    <span class="nav-caption">POR AQUI</span>
+    <nav aria-label="Navegação principal">
+      <button class="nav-item active" data-view="overview" aria-current="page">
+        <span class="nav-number" aria-hidden="true">01</span>Visão geral
+        <svg class="icon nav-arrow" aria-hidden="true"><use href="#i-arrow"/></svg>
+      </button>
+      <button class="nav-item" data-view="expenses">
+        <span class="nav-number" aria-hidden="true">02</span>Gastos
+        <svg class="icon nav-arrow" aria-hidden="true"><use href="#i-arrow"/></svg>
+      </button>
+      <button class="nav-item" data-view="categories">
+        <span class="nav-number" aria-hidden="true">03</span>Categorias
+        <svg class="icon nav-arrow" aria-hidden="true"><use href="#i-arrow"/></svg>
+      </button>
+    </nav>
+
+    <div class="sidebar-note">
+      <span class="note-asterisk" aria-hidden="true">✳</span>
+      <p>Melhor anotar.<br><em>A memória já tem<br>coisa demais.</em></p>
+      <span class="note-rule" aria-hidden="true"></span>
+      <small>Do café ao aluguel.</small>
     </div>
-    <div class="charts-grid">
-      <article class="panel category-panel"><div class="panel-heading"><div><h2>Para onde foi?</h2><p>Distribuição por categoria</p></div><span class="subtle-pill">NO MÊS</span></div><div id="category-chart" class="category-chart"><div class="loading-placeholder">Carregando categorias…</div></div></article>
-      <article class="panel history-panel"><div class="panel-heading"><div><h2>Seu ritmo de gastos</h2><p>Uma visão dos últimos seis meses</p></div><svg class="icon muted"><use href="#i-calendar"/></svg></div><div id="history-chart" class="history-chart"><div class="loading-placeholder">Carregando histórico…</div></div><div class="chart-legend"><span></span>Total gasto em cada mês</div></article>
+    <div class="sidebar-footer">
+      <span class="avatar" aria-hidden="true">eu</span>
+      <span>Meu caderno<small>Contas em reais.</small></span>
     </div>
-  </section>
-  <section id="expenses-section" class="panel expenses-panel" aria-label="Lista de gastos">
-    <div class="panel-heading"><div><h2 id="table-title">Últimos gastos</h2><p id="table-subtitle">Os detalhes fazem a diferença.</p></div><button id="view-all" class="text-button">Ver todos <svg class="icon"><use href="#i-arrow"/></svg></button><button id="export-csv" class="button small" hidden><svg class="icon"><use href="#i-download"/></svg>Exportar CSV</button></div>
-    <form id="filters" class="filters" hidden><label class="search-field"><svg class="icon"><use href="#i-search"/></svg><input name="search" id="filter-search" type="search" placeholder="Buscar descrição" maxlength="120" aria-label="Buscar pela descrição"></label><label>Categoria<select id="filter-category" name="categoryId"><option value="">Todas as categorias</option></select></label><label>De<input type="date" id="filter-from" name="from" min="1900-01-01" max="9998-12-31" required></label><label>Até<input type="date" id="filter-to" name="to" min="1900-01-01" max="9998-12-31" required></label><button class="button small" type="submit">Filtrar</button><button class="text-button" id="reset-filters" type="button">Limpar</button></form>
-    <div class="table-scroll"><table><thead><tr><th>Descrição</th><th>Categoria</th><th>Data</th><th>Pagamento</th><th class="amount-column">Valor</th><th class="actions-column"><span class="sr-only">Ações</span></th></tr></thead><tbody id="expense-rows"><tr><td colspan="6" class="loading-placeholder">Carregando seus gastos…</td></tr></tbody></table></div>
-    <div class="table-footer"><span id="table-count">—</span><div id="pagination" class="pagination" hidden><button class="icon-button" id="previous-page" aria-label="Página anterior"><svg class="icon flip"><use href="#i-chevron"/></svg></button><span id="page-info"></span><button class="icon-button" id="next-page" aria-label="Próxima página"><svg class="icon"><use href="#i-chevron"/></svg></button></div></div>
-  </section>
-  <section id="categories-view" hidden aria-label="Categorias"><div class="category-help">Organize os gastos do seu jeito. Categorias com gastos vinculados podem ser editadas, mas só podem ser excluídas depois de mover ou remover os gastos.</div><div id="category-list" class="category-list"></div></section>
-  <footer class="main-footer"><span>Clareza hoje. Mais tranquilidade amanhã.</span><span>controle.</span></footer>
-</main>
-<dialog id="expense-dialog" aria-labelledby="expense-dialog-title"><form id="expense-form"><div class="dialog-heading"><div><p class="eyebrow">ORGANIZE SEU DIA A DIA</p><h2 id="expense-dialog-title">Novo gasto</h2></div><button class="icon-button" type="button" data-close="expense-dialog" aria-label="Fechar"><svg class="icon"><use href="#i-close"/></svg></button></div><p class="dialog-description">Registre os detalhes para acompanhar suas escolhas.</p><div class="error" id="expense-error" role="alert" hidden></div><input type="hidden" name="id"><label>Descrição<input name="description" maxlength="120" placeholder="Ex.: compras no supermercado" required></label><div class="form-grid"><label>Valor (R$)<input name="amount" type="number" min="0.01" max="9999999999.99" step="0.01" inputmode="decimal" placeholder="0,00" required></label><label>Data<input name="date" type="date" min="1900-01-01" max="9998-12-31" required></label><label>Categoria<select name="categoryId" required></select></label><label>Pagamento<select name="paymentMethod" required><option value="PIX">Pix</option><option value="DEBITO">Débito</option><option value="CREDITO">Crédito</option><option value="DINHEIRO">Dinheiro</option><option value="BOLETO">Boleto</option><option value="TRANSFERENCIA">Transferência</option></select></label></div><label>Observações <span class="optional">(opcional)</span><textarea name="notes" rows="3" maxlength="500" placeholder="Algum detalhe que você queira lembrar…"></textarea></label><div class="dialog-actions"><button type="button" class="button" data-close="expense-dialog">Cancelar</button><button type="submit" class="button primary">Salvar gasto</button></div></form></dialog>
-<dialog id="category-dialog" aria-labelledby="category-dialog-title"><form id="category-form"><div class="dialog-heading"><h2 id="category-dialog-title">Nova categoria</h2><button type="button" class="icon-button" data-close="category-dialog" aria-label="Fechar"><svg class="icon"><use href="#i-close"/></svg></button></div><p class="dialog-description">Dê um nome e uma cor para organizar seus gastos.</p><div id="category-error" class="error" role="alert" hidden></div><input name="id" type="hidden"><label>Nome<input name="name" maxlength="60" placeholder="Ex.: viagens" required></label><label>Cor<input name="color" type="color" value="#14b8a6" required></label><div class="dialog-actions"><button type="button" class="button" data-close="category-dialog">Cancelar</button><button type="submit" class="button primary">Salvar categoria</button></div></form></dialog>
-<dialog id="budget-dialog" aria-label="Orçamento do mês"><form id="budget-form"><div class="dialog-heading"><h2>Orçamento do mês</h2><button type="button" class="icon-button" data-close="budget-dialog" aria-label="Fechar"><svg class="icon"><use href="#i-close"/></svg></button></div><p class="dialog-description" id="budget-month-description"></p><div id="budget-error" class="error" role="alert" hidden></div><label>Quanto você quer gastar? (R$)<input name="amount" type="number" min="0.01" max="9999999999.99" step="0.01" inputmode="decimal" placeholder="Ex.: 3500,00" required></label><div class="dialog-actions budget-actions"><button type="button" id="remove-budget" class="text-button danger-text" hidden>Remover orçamento</button><button type="submit" class="button primary">Salvar orçamento</button></div></form></dialog>
-<dialog id="confirm-dialog" aria-labelledby="confirm-title"><div class="dialog-heading"><h2 id="confirm-title">Excluir registro?</h2><button class="icon-button" type="button" data-close="confirm-dialog" aria-label="Fechar"><svg class="icon"><use href="#i-close"/></svg></button></div><p class="dialog-description" id="confirm-description"></p><div id="confirm-error" class="error" role="alert" hidden></div><div class="dialog-actions"><button type="button" class="button" data-close="confirm-dialog" autofocus>Cancelar</button><button id="confirm-delete" class="button danger" type="button">Excluir</button></div></dialog>
-<div id="toast" class="toast" role="status" aria-live="polite" hidden><svg class="icon"><use href="#i-check"/></svg><span></span></div>
+  </aside>
+
+  <main id="main-content" tabindex="-1">
+    <div class="topbar">
+      <span class="breadcrumb">Meu caderno <span>/</span> <strong id="breadcrumb">Visão geral</strong></span>
+      <span class="local-badge"><span aria-hidden="true"></span>Um mês de cada vez</span>
+    </div>
+    <div id="demo-banner" class="demo-banner" hidden>
+      <strong>Só um exemplo.</strong> Os dados são fictícios e somem ao reiniciar.
+    </div>
+
+    <header class="page-header">
+      <div class="header-copy">
+        <p class="eyebrow">CONTAS DO DIA A DIA</p>
+        <h1 id="page-title">
+          <span id="title-line">Seu mês,</span>
+          <em id="title-accent">sem rodeios.</em>
+        </h1>
+        <p id="page-subtitle">O que você gastou. E quanto ainda cabe no mês.</p>
+      </div>
+      <div class="header-actions">
+        <button class="button primary" id="main-add">
+          <svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>
+          <span>Novo gasto</span>
+        </button>
+        <aside class="margin-note" aria-hidden="true">
+          <span>Sim, aquele café<br>também entra.</span>
+          <svg viewBox="0 0 100 48" fill="none"><path d="M88 4C87 26 51 4 34 19S17 35 7 35m0 0 11-9M7 35l14 1"/></svg>
+        </aside>
+      </div>
+    </header>
+
+    <div id="global-error" class="error global-error" role="alert" hidden>
+      <span></span><button class="button small" id="retry">Tentar novamente</button>
+    </div>
+    <div id="month-toolbar" class="month-toolbar">
+      <div class="month-picker">
+        <button class="icon-button" id="previous-month" aria-label="Mês anterior"><svg class="icon flip" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+        <label class="month-label">
+          <svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>
+          <span id="month-label">Carregando…</span>
+          <input type="month" id="selected-month" min="1900-01" max="9998-12" aria-label="Selecionar mês">
+        </label>
+        <button class="icon-button" id="next-month" aria-label="Próximo mês"><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+      </div>
+      <span class="period-note">Escolha o mês. A soma fica com a gente.</span>
+    </div>
+
+    <section id="overview-view" aria-label="Resumo mensal">
+      <!-- Cada número tem seu peso. Os três blocos não precisam vestir o mesmo molde. -->
+      <div class="stats-grid">
+        <article class="stat-card total-card">
+          <div class="stat-heading">Gastos do mês <span class="stat-mark" aria-hidden="true">R$</span></div>
+          <strong id="stat-total">—</strong>
+          <span id="stat-comparison" class="stat-caption">Somando os registros…</span>
+          <span class="total-rule" aria-hidden="true"></span>
+        </article>
+        <article class="stat-card budget-card">
+          <div class="stat-heading">Saldo do orçamento <button class="text-button" id="open-budget">Definir</button></div>
+          <strong id="stat-remaining">—</strong>
+          <div class="budget-track"><span id="budget-progress"></span></div>
+          <span id="stat-budget-caption" class="stat-caption">Quanto você quer gastar neste mês?</span>
+        </article>
+        <article class="stat-card count-card">
+          <div class="stat-heading">Gastos registrados <span class="count-tick" aria-hidden="true">↗</span></div>
+          <strong id="stat-count">—</strong>
+          <span id="stat-average" class="stat-caption">Um registro de cada vez.</span>
+        </article>
+      </div>
+
+      <div class="charts-grid">
+        <article class="panel category-panel">
+          <div class="panel-heading">
+            <div><span class="section-kicker">A CONTA, EM PARTES</span><h2>Para onde foi?</h2><p>Cada categoria tem seu pedaço.</p></div>
+            <span class="subtle-pill">NO MÊS</span>
+          </div>
+          <div id="category-chart" class="category-chart"><div class="loading-placeholder">Separando por categoria…</div></div>
+        </article>
+        <article class="panel history-panel">
+          <div class="panel-heading">
+            <div><span class="section-kicker">COM UM POUCO DE DISTÂNCIA</span><h2>Um mês depois do outro.</h2><p>Os últimos seis, lado a lado.</p></div>
+          </div>
+          <div id="history-chart" class="history-chart"><div class="loading-placeholder">Buscando os meses anteriores…</div></div>
+          <div class="chart-legend"><span aria-hidden="true"></span>Total de cada mês</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="expenses-section" class="panel expenses-panel" aria-label="Lista de gastos">
+      <div class="panel-heading">
+        <div><span class="section-kicker">SEM PULAR AS LINHAS</span><h2 id="table-title">Os últimos registros.</h2><p id="table-subtitle">Do mais recente para trás.</p></div>
+        <button id="view-all" class="text-button">Ver todos <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        <button id="export-csv" class="button small" hidden><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Exportar CSV</button>
+      </div>
+      <form id="filters" class="filters" hidden>
+        <label class="search-field"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><input name="search" id="filter-search" type="search" placeholder="O que você procura?" maxlength="120" aria-label="Buscar pela descrição"></label>
+        <label>Categoria<select id="filter-category" name="categoryId"><option value="">Todas as categorias</option></select></label>
+        <label>De<input type="date" id="filter-from" name="from" min="1900-01-01" max="9998-12-31" required></label>
+        <label>Até<input type="date" id="filter-to" name="to" min="1900-01-01" max="9998-12-31" required></label>
+        <button class="button small" type="submit">Filtrar</button>
+        <button class="text-button" id="reset-filters" type="button">Limpar</button>
+      </form>
+      <div class="table-scroll" role="region" aria-label="Gastos; role horizontalmente para ver todas as colunas" tabindex="0">
+        <table>
+          <thead><tr><th>Descrição</th><th>Categoria</th><th>Data</th><th>Pagamento</th><th class="amount-column">Valor</th><th class="actions-column"><span class="sr-only">Ações</span></th></tr></thead>
+          <tbody id="expense-rows"><tr><td colspan="6" class="loading-placeholder">Abrindo o caderno…</td></tr></tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <span id="table-count">—</span>
+        <div id="pagination" class="pagination" hidden>
+          <button class="icon-button" id="previous-page" aria-label="Página anterior"><svg class="icon flip" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+          <span id="page-info"></span>
+          <button class="icon-button" id="next-page" aria-label="Próxima página"><svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="categories-view" hidden aria-label="Categorias">
+      <div class="category-help">Pode mudar o nome e a cor quando quiser. Para apagar uma categoria, primeiro mova ou exclua os gastos dela.</div>
+      <div id="category-list" class="category-list"></div>
+    </section>
+    <footer class="main-footer"><span>Por hoje, tá anotado.</span><span class="footer-signature">controle.</span></footer>
+  </main>
+
+  <!-- Formulários simples: o capricho fica no espaço, não em esconder o campo. -->
+  <dialog id="expense-dialog" aria-labelledby="expense-dialog-title">
+    <form id="expense-form">
+      <div class="dialog-heading">
+        <div><p class="eyebrow">MAIS UMA LINHA NO CADERNO</p><h2 id="expense-dialog-title">Novo gasto</h2></div>
+        <button class="icon-button" type="button" data-close="expense-dialog" aria-label="Fechar"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <p class="dialog-description">O básico resolve. As observações ficam por sua conta.</p>
+      <div class="error" id="expense-error" role="alert" hidden></div>
+      <input type="hidden" name="id">
+      <label>Descrição<input name="description" maxlength="120" placeholder="Ex.: café na esquina" required></label>
+      <div class="form-grid">
+        <label>Valor (R$)<input name="amount" type="number" min="0.01" max="9999999999.99" step="0.01" inputmode="decimal" placeholder="0,00" required></label>
+        <label>Data<input name="date" type="date" min="1900-01-01" max="9998-12-31" required></label>
+        <label>Categoria<select name="categoryId" required></select></label>
+        <label>Pagamento<select name="paymentMethod" required><option value="PIX">Pix</option><option value="DEBITO">Débito</option><option value="CREDITO">Crédito</option><option value="DINHEIRO">Dinheiro</option><option value="BOLETO">Boleto</option><option value="TRANSFERENCIA">Transferência</option></select></label>
+      </div>
+      <label>Observações <span class="optional">se precisar</span><textarea name="notes" rows="3" maxlength="500" placeholder="Um detalhe para lembrar depois…"></textarea></label>
+      <div class="dialog-actions"><button type="button" class="button" data-close="expense-dialog">Cancelar</button><button type="submit" class="button primary">Salvar gasto</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="category-dialog" aria-labelledby="category-dialog-title">
+    <form id="category-form">
+      <div class="dialog-heading"><h2 id="category-dialog-title">Nova categoria</h2><button type="button" class="icon-button" data-close="category-dialog" aria-label="Fechar"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <p class="dialog-description">Um nome curto. Uma cor que faça sentido para você.</p>
+      <div id="category-error" class="error" role="alert" hidden></div>
+      <input name="id" type="hidden">
+      <label>Nome<input name="name" maxlength="60" placeholder="Ex.: a casa" required></label>
+      <label>Cor<input name="color" type="color" value="#7f8b64" required></label>
+      <div class="dialog-actions"><button type="button" class="button" data-close="category-dialog">Cancelar</button><button type="submit" class="button primary">Salvar categoria</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="budget-dialog" aria-label="Orçamento do mês">
+    <form id="budget-form">
+      <div class="dialog-heading"><h2>Orçamento do mês</h2><button type="button" class="icon-button" data-close="budget-dialog" aria-label="Fechar"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <p class="dialog-description" id="budget-month-description"></p>
+      <div id="budget-error" class="error" role="alert" hidden></div>
+      <label>Quanto cabe neste mês? (R$)<input name="amount" type="number" min="0.01" max="9999999999.99" step="0.01" inputmode="decimal" placeholder="Ex.: 3500,00" required></label>
+      <div class="dialog-actions budget-actions"><button type="button" id="remove-budget" class="text-button danger-text" hidden>Remover orçamento</button><button type="submit" class="button primary">Salvar orçamento</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="confirm-dialog" aria-labelledby="confirm-title">
+    <div class="dialog-heading"><h2 id="confirm-title">Excluir registro?</h2><button class="icon-button" type="button" data-close="confirm-dialog" aria-label="Fechar"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+    <p class="dialog-description" id="confirm-description"></p>
+    <div id="confirm-error" class="error" role="alert" hidden></div>
+    <div class="dialog-actions"><button type="button" class="button" data-close="confirm-dialog" autofocus>Cancelar</button><button id="confirm-delete" class="button danger" type="button">Excluir</button></div>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span></span></div>
 </body>
 </html>

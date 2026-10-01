@@ -2,7 +2,9 @@
 
 Aplicação web pessoal em **Java 21 + Spring Boot + MySQL**, com interface em português e valores em reais. Registre despesas, organize categorias e acompanhe o orçamento de cada mês.
 
-![Painel de controle de gastos com dados de demonstração](docs/preview-desktop.png)
+![Interface editorial do controle de gastos, com dados fictícios](docs/editorial-desktop.png)
+
+A interface usa tons de papel, verde e terracota, títulos em Georgia e texto em Segoe UI. O resumo dá mais espaço ao total do mês; gráficos e listas têm ritmos diferentes. Veja os arquivos e as escolhas visuais em [INTERFACE.md](INTERFACE.md).
 
 ## Funcionalidades
 
@@ -17,7 +19,7 @@ Aplicação web pessoal em **Java 21 + Spring Boot + MySQL**, com interface em p
 
 ## Experimentar agora no Windows
 
-1. Baixe o pacote completo na [versão 1.0.0](https://github.com/eduardorota1113/controle-gastos-java/releases/tag/v1.0.0) e extraia o ZIP inteiro para uma pasta.
+1. Baixe o pacote completo na [versão 1.1.0](https://github.com/eduardorota1113/controle-gastos-java/releases/tag/v1.1.0) e extraia o ZIP inteiro para uma pasta.
 2. Tenha **Java 21** instalado (`java -version` deve mostrar 21 ou superior).
 3. Dê dois cliques em **iniciar-demo.cmd**.
 4. Aguarde a mensagem `Started ControleGastosApplication` e abra **http://localhost:8080**.
@@ -79,7 +81,7 @@ As opções `allowPublicKeyRetrieval=true` e `useSSL=false` do Compose e do CI d
 
 ```powershell
 .\mvnw.cmd verify
-java -jar target/controle-gastos-1.0.0.jar --spring.profiles.active=demo
+java -jar target/controle-gastos-1.1.0.jar --spring.profiles.active=demo
 ```
 
 Os testes padrão usam H2 em modo MySQL. Para testar com **um banco MySQL exclusivo de testes**, defina:
@@ -93,7 +95,7 @@ $env:TEST_DB_PASSWORD = "SENHA_DE_TESTE"
 
 O banco de testes deve existir e estar vazio na primeira execução. As migrações criam as tabelas; cada teste desfaz suas alterações. Nunca aponte `TEST_DB_URL` para um banco com gastos reais.
 
-O GitHub Actions executa os testes em H2 e em MySQL 8.4 e disponibiliza o JAR como artefato de build. A execução desse workflow depende de publicar o repositório no GitHub. O arquivo `VALIDACAO.md` registra as verificações realizadas na entrega.
+O GitHub Actions executa os testes em H2 e em MySQL 8.4 a cada envio e disponibiliza o JAR como artefato de build. Consulte o resultado na aba **Actions**. O arquivo `VALIDACAO.md` registra as verificações realizadas na entrega.
 
 ## Organização do código
 

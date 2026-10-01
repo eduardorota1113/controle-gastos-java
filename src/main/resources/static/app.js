@@ -10,6 +10,17 @@ const dateLabel = date => new Date(`${date}T12:00:00`).toLocaleDateString('pt-BR
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 const icon = name => `<svg class="icon" aria-hidden="true"><use href="#i-${name}"/></svg>`;
 const methods = { PIX: 'Pix', DEBITO: 'Débito', CREDITO: 'Crédito', DINHEIRO: 'Dinheiro', BOLETO: 'Boleto', TRANSFERENCIA: 'Transferência' };
+const categoryPalette = {
+  'Alimentação': ['#f59e0b', '#b78c47'],
+  'Moradia': ['#6366f1', '#60745a'],
+  'Transporte': ['#06b6d4', '#647e82'],
+  'Saúde': ['#f43f5e', '#ad6553'],
+  'Lazer': ['#8b5cf6', '#88727c'],
+  'Educação': ['#14b8a6', '#7f8b64'],
+  'Outros': ['#64748b', '#8d8776']
+};
+// Só as cores iniciais ganham o tom do caderno. As que você escolheu continuam suas.
+const categoryInk = (color, name) => categoryPalette[name]?.[0] === color.toLowerCase() ? categoryPalette[name][1] : color;
 const state = { view: 'overview', month: localDate().slice(0, 7), categories: [], dashboard: null, expenses: [], page: 0, total: 0, filters: {}, request: 0, busy: false };
 let toastTimer;
 let confirmAction;
@@ -58,10 +69,16 @@ function globalError(error) {
 function setView(view) {
   state.view = ['overview', 'expenses', 'categories'].includes(view) ? view : 'overview';
   state.page = 0;
-  const titles = { overview: ['Visão geral', 'Entenda para onde seu dinheiro está indo.'], expenses: ['Seus gastos', 'Cada registro ajuda a enxergar o todo.'], categories: ['Categorias', 'Um lugar para cada tipo de gasto.'] };
-  const [title, subtitle] = titles[state.view];
-  $('#page-title').textContent = title;
-  $('#breadcrumb').textContent = state.view === 'expenses' ? 'Gastos' : title;
+  const titles = {
+    overview: ['Seu mês,', 'sem rodeios.', 'O que você gastou. E quanto ainda cabe no mês.', 'Visão geral'],
+    expenses: ['Cada gasto,', 'por escrito.', 'Do almoço de hoje à conta que chega todo mês.', 'Gastos'],
+    categories: ['Cada coisa,', 'no seu lugar.', 'Dê um nome às coisas. Depois fica fácil achar.', 'Categorias']
+  };
+  const [title, accent, subtitle, breadcrumb] = titles[state.view];
+  document.body.dataset.view = state.view;
+  $('#title-line').textContent = title;
+  $('#title-accent').textContent = accent;
+  $('#breadcrumb').textContent = breadcrumb;
   $('#page-subtitle').textContent = subtitle;
   $('#main-add span').textContent = state.view === 'categories' ? 'Nova categoria' : 'Novo gasto';
   $('#overview-view').hidden = state.view !== 'overview';
@@ -72,8 +89,8 @@ function setView(view) {
   $('#export-csv').hidden = state.view !== 'expenses';
   $('#pagination').hidden = state.view !== 'expenses';
   $('#view-all').hidden = state.view !== 'overview';
-  $('#table-title').textContent = state.view === 'overview' ? 'Últimos gastos' : 'Gastos do período';
-  $('#table-subtitle').textContent = state.view === 'overview' ? 'Os detalhes fazem a diferença.' : 'Filtre por descrição, categoria ou intervalo de datas.';
+  $('#table-title').textContent = state.view === 'overview' ? 'Os últimos registros.' : 'Linha por linha.';
+  $('#table-subtitle').textContent = state.view === 'overview' ? 'Do mais recente para trás.' : 'Busque pelo nome ou recorte o período.';
   $$('.nav-item').forEach(button => {
     button.classList.toggle('active', button.dataset.view === state.view);
     if (button.dataset.view === state.view) button.setAttribute('aria-current', 'page');
@@ -146,36 +163,39 @@ function renderCategories() {
   const options = state.categories.map(category => `<option value="${category.id}">${escapeHtml(category.name)}</option>`).join('');
   $('#filter-category').innerHTML = `<option value="">Todas as categorias</option>${options}`;
   if (state.categories.some(category => String(category.id) === selected)) $('#filter-category').value = selected;
-  $('#category-list').innerHTML = state.categories.length ? state.categories.map(category => `<article class="category-card"><span class="expense-icon" style="color:${category.color};background:${category.color}12">${icon('tag')}</span><div class="category-details"><strong>${escapeHtml(category.name)}</strong><small>${number(category.expenseCount)} ${category.expenseCount === 1 ? 'gasto vinculado' : 'gastos vinculados'}</small></div><div class="row-actions"><button class="icon-button" data-edit-category="${category.id}" aria-label="Editar ${escapeHtml(category.name)}">${icon('edit')}</button><button class="icon-button" data-delete-category="${category.id}" aria-label="Excluir ${escapeHtml(category.name)}">${icon('trash')}</button></div></article>`).join('') : `<div class="panel empty-state">${icon('tag')}<strong>Suas categorias começam aqui</strong><p>Use “Nova categoria” para criar a primeira.</p></div>`;
+  $('#category-list').innerHTML = state.categories.length ? state.categories.map(category => {
+    const color = categoryInk(category.color, category.name);
+    return `<article class="category-card"><span class="expense-icon" style="color:${color};background:${color}18">${icon('tag')}</span><div class="category-details"><strong>${escapeHtml(category.name)}</strong><small>${number(category.expenseCount)} ${category.expenseCount === 1 ? 'gasto vinculado' : 'gastos vinculados'}</small></div><div class="row-actions"><button class="icon-button" data-edit-category="${category.id}" aria-label="Editar ${escapeHtml(category.name)}">${icon('edit')}</button><button class="icon-button" data-delete-category="${category.id}" aria-label="Excluir ${escapeHtml(category.name)}">${icon('trash')}</button></div></article>`;
+  }).join('') : `<div class="panel empty-state">${icon('tag')}<strong>Cada coisa com seu nome.</strong><p>Use “Nova categoria” para começar.</p></div>`;
 }
 
 function renderDashboard(data) {
   $('#stat-total').textContent = money(data.total);
   $('#stat-count').textContent = number(data.count);
-  $('#stat-average').textContent = data.count ? `${money(Number(data.total) / data.count)} em média por gasto` : 'Seu mês está pronto para o primeiro registro';
+  $('#stat-average').textContent = data.count ? `${money(Number(data.total) / data.count)} em média por gasto` : 'Comece pela primeira anotação.';
   const previous = Number(data.previousTotal);
   const difference = previous ? ((Number(data.total) - previous) / previous) * 100 : null;
   $('#stat-comparison').textContent = difference === null ? 'Sem gastos no mês anterior' : difference === 0 ? 'Mesmo total do mês anterior' : `${Math.abs(difference).toLocaleString('pt-BR', { maximumFractionDigits: 1 })}% ${difference < 0 ? 'a menos' : 'a mais'} que o mês anterior`;
   const hasBudget = data.budget !== null;
   const over = hasBudget && Number(data.remaining) < 0;
-  $('#stat-remaining').textContent = hasBudget ? money(data.remaining) : 'Sem limite';
+  $('#stat-remaining').textContent = hasBudget ? money(data.remaining) : 'Sem orçamento';
   $('#stat-remaining').classList.toggle('negative', over);
   $('#open-budget').textContent = hasBudget ? 'Editar' : 'Definir';
   const percentage = hasBudget ? Number(data.total) / Number(data.budget) * 100 : 0;
   $('#budget-progress').style.width = `${Math.min(percentage, 100)}%`;
-  $('#budget-progress').style.background = over ? '#c8665f' : '#81aa66';
-  $('#stat-budget-caption').textContent = hasBudget ? over ? `Limite de ${money(data.budget)} ultrapassado` : `${Math.round(percentage)}% do orçamento de ${money(data.budget)}` : 'Defina quanto quer gastar neste mês';
+  $('#budget-progress').style.background = over ? '#a74f3e' : '#7c8a65';
+  $('#stat-budget-caption').textContent = hasBudget ? over ? `Limite de ${money(data.budget)} ultrapassado` : `${Math.round(percentage)}% do orçamento de ${money(data.budget)}` : 'Quanto você quer gastar neste mês?';
   renderCategoryChart(data);
   renderHistoryChart(data.history);
 }
 
 function renderCategoryChart(data) {
   if (!Number(data.total)) {
-    $('#category-chart').innerHTML = `<div class="empty-chart"><div>${icon('tag')}<p>Suas categorias aparecem aqui<br>quando você registrar um gasto.</p></div></div>`;
+    $('#category-chart').innerHTML = `<div class="empty-chart"><div>${icon('tag')}<p>Ainda não tem o que dividir.<br>Registre o primeiro gasto.</p></div></div>`;
     return;
   }
-  const groups = data.byCategory.slice(0, 5);
-  if (data.byCategory.length > 5) groups.push({ name: 'Demais categorias', color: '#b4c2b7', total: data.byCategory.slice(5).reduce((sum, category) => sum + Number(category.total), 0) });
+  const groups = data.byCategory.slice(0, 5).map(category => ({ ...category, color: categoryInk(category.color, category.name) }));
+  if (data.byCategory.length > 5) groups.push({ name: 'Demais categorias', color: '#8d8776', total: data.byCategory.slice(5).reduce((sum, category) => sum + Number(category.total), 0) });
   let offset = 0;
   const gradient = groups.map(category => {
     const start = offset;
@@ -193,13 +213,16 @@ function renderHistoryChart(items) {
     const height = Number(item.total) / maximum * 120;
     const x = 69 + index * 68;
     const label = new Date(`${item.month}-15T12:00:00`).toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '');
-    return `<g><title>${monthName(item.month)}: ${money(item.total)}</title><rect x="${x}" y="${159 - height}" width="35" height="${Math.max(height, 2)}" rx="5" fill="${index === 5 ? '#123d32' : '#c5dcb9'}"/><text class="chart-label" x="${x + 17.5}" y="184" text-anchor="middle">${label}</text></g>`;
+    return `<g><title>${monthName(item.month)}: ${money(item.total)}</title><rect x="${x}" y="${159 - height}" width="35" height="${Math.max(height, 2)}" rx="1" fill="${index === 5 ? '#344c3b' : '#a6b094'}"/><text class="chart-label" x="${x + 17.5}" y="184" text-anchor="middle">${label}</text></g>`;
   }).join('');
   $('#history-chart').innerHTML = `<svg viewBox="0 0 500 195" role="img" aria-label="Gastos dos últimos seis meses em reais"><text class="chart-label" x="6" y="16">R$</text>${grid}${bars}</svg>`;
 }
 
 function renderExpenses(page) {
-  $('#expense-rows').innerHTML = page.items.length ? page.items.map(expense => `<tr><td><div class="expense-description"><span class="expense-icon" style="color:${expense.categoryColor};background:${expense.categoryColor}12">${icon('wallet')}</span><span class="expense-text" title="${escapeHtml(expense.description)}">${escapeHtml(expense.description)}</span></div></td><td><span class="category-pill"><span class="color-dot" style="background:${expense.categoryColor}"></span>${escapeHtml(expense.categoryName)}</span></td><td class="date-cell">${dateLabel(expense.date)}</td><td class="payment-cell">${methods[expense.paymentMethod]}</td><td class="amount-column">${money(expense.amount)}</td><td class="actions-column"><div class="row-actions"><button class="icon-button" data-edit-expense="${expense.id}" aria-label="Editar ${escapeHtml(expense.description)}">${icon('edit')}</button><button class="icon-button" data-delete-expense="${expense.id}" aria-label="Excluir ${escapeHtml(expense.description)}">${icon('trash')}</button></div></td></tr>`).join('') : `<tr><td colspan="6" class="empty-state">${icon('wallet')}<strong>${state.view === 'expenses' ? 'Nenhum gasto neste filtro' : 'Um novo mês, novas escolhas'}</strong><p>${state.view === 'expenses' ? 'Ajuste os filtros ou registre um novo gasto.' : 'Registre seu primeiro gasto para começar a acompanhar.'}</p></td></tr>`;
+  $('#expense-rows').innerHTML = page.items.length ? page.items.map(expense => {
+    const color = categoryInk(expense.categoryColor, expense.categoryName);
+    return `<tr><td><div class="expense-description"><span class="expense-icon" style="color:${color};background:${color}18">${icon('wallet')}</span><span class="expense-text" title="${escapeHtml(expense.description)}">${escapeHtml(expense.description)}</span></div></td><td><span class="category-pill"><span class="color-dot" style="background:${color}"></span>${escapeHtml(expense.categoryName)}</span></td><td class="date-cell">${dateLabel(expense.date)}</td><td class="payment-cell">${methods[expense.paymentMethod]}</td><td class="amount-column">${money(expense.amount)}</td><td class="actions-column"><div class="row-actions"><button class="icon-button" data-edit-expense="${expense.id}" aria-label="Editar ${escapeHtml(expense.description)}">${icon('edit')}</button><button class="icon-button" data-delete-expense="${expense.id}" aria-label="Excluir ${escapeHtml(expense.description)}">${icon('trash')}</button></div></td></tr>`;
+  }).join('') : `<tr><td colspan="6" class="empty-state">${icon('wallet')}<strong>${state.view === 'expenses' ? 'Nada por aqui.' : 'Uma página em branco.'}</strong><p>${state.view === 'expenses' ? 'Tente outro filtro ou anote um novo gasto.' : 'Seu primeiro registro começa em “Novo gasto”.'}</p></td></tr>`;
   $('#table-count').textContent = state.view === 'overview' ? `${page.items.length} de ${number(page.totalElements)} gastos do mês` : `${number(page.totalElements)} ${page.totalElements === 1 ? 'gasto encontrado' : 'gastos encontrados'} · Total: ${money(page.totalAmount)}`;
   $('#page-info').textContent = `${state.page + 1} / ${Math.max(1, Math.ceil(page.totalElements / 10))}`;
   $('#previous-page').disabled = state.page === 0;
@@ -231,7 +254,7 @@ function openCategory(category) {
   $('#category-dialog-title').textContent = category ? 'Editar categoria' : 'Nova categoria';
   form.elements.id.value = category?.id || '';
   form.elements.name.value = category?.name || '';
-  form.elements.color.value = category?.color || '#14b8a6';
+  form.elements.color.value = category ? categoryInk(category.color, category.name) : '#7f8b64';
   $('#category-dialog').showModal();
   form.elements.name.focus();
 }

@@ -9,7 +9,7 @@
   </parent>
   <groupId>br.com.controle</groupId>
   <artifactId>controle-gastos</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <name>Controle de Gastos</name>
   <description>Sistema pessoal de controle de gastos em Java e MySQL</description>
   <properties><java.version>21</java.version></properties>

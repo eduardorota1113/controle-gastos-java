@@ -19,7 +19,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: controle-gastos-jar
-          path: target/controle-gastos-1.0.0.jar
+          path: target/controle-gastos-1.1.0.jar
   mysql:
     runs-on: ubuntu-latest
     services:
